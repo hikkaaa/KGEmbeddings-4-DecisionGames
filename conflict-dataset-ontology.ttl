@@ -1,316 +1,469 @@
-@prefix :        <http://example.org/conflict-ontology#> .
-@prefix owl:     <http://www.w3.org/2002/07/owl#> .
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dgo:      <http://example.org/decision-game-ontology#> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
 
 #################################################################
-# Ontology header
+# ONTOLOGY
 #################################################################
 
-:ConflictOntology
-  a owl:Ontology ;
-  dcterms:title "Conflict game ontology"@en ;
-  dcterms:description "Data-driven ontology for representing conflict game datasets with participants, games, rounds, interactions, decisions, and country context."@en ;
-  owl:versionInfo "1.0.0"@en .
+dgo:DecisionGameOntology
+    a owl:Ontology ;
+    dcterms:title "Decision Game Ontology"@en ;
+    dcterms:description "An ontology for representing participants, games, rounds, interactions, and situated decision events in competitive, cooperative, and mixed-motive game settings. The ontology is designed to support both structured knowledge representation and knowledge graph embedding workflows."@en .
 
 #################################################################
 # CLASSES
 #################################################################
 
-:Dataset a owl:Class ;
-  rdfs:label "Dataset"@en ;
-  rdfs:comment "A dataset release or version. Used for provenance and traceability when multiple datasets are represented."@en .
+dgo:Dataset a owl:Class ;
+    rdfs:label "Dataset"@en ;
+    rdfs:comment "A dataset from which game observations and participant information are derived."@en .
 
-:Game a owl:Class ;
-  rdfs:label "Game"@en ;
-  rdfs:comment "A conflict game in which participants take part. A game contains multiple rounds."@en .
+dgo:Game a owl:Class ;
+    rdfs:label "Game"@en ;
+    rdfs:comment "A game instance or experimental game setting in which decision events occur."@en .
 
-:Round a owl:Class ;
-  rdfs:label "Round"@en ;
-  rdfs:comment "A single round within a game. Each round contains one interaction context and one decision by the focal participant."@en .
+dgo:Round a owl:Class ;
+    rdfs:label "Round"@en ;
+    rdfs:comment "A round within a game."@en .
 
-:Interaction a owl:Class ;
-  rdfs:label "Interaction"@en ;
-  rdfs:comment "Interaction context between a focal participant and an opponent in a round. In the dataset, the opponent is only observed through the opponent's country."@en .
+dgo:Interaction a owl:Class ;
+    rdfs:label "Interaction"@en ;
+    rdfs:comment "The interaction context associated with a round or decision event."@en .
 
-:Decision a owl:Class ;
-  rdfs:label "Decision"@en ;
-  rdfs:comment "A decision event representing the participant's investment choice in a given round."@en .
+dgo:DecisionEvent a owl:Class ;
+    rdfs:label "Decision Event"@en ;
+    rdfs:comment "A decision made by a participant in a specific game, round, and interaction context."@en .
 
-:Participant a owl:Class ;
-  rdfs:label "Participant"@en ;
-  rdfs:comment "A human subject in the dataset. Participant attributes correspond to i_* variables."@en .
+dgo:Participant a owl:Class ;
+    rdfs:label "Participant"@en ;
+    rdfs:comment "A human participant in a decision game."@en .
 
-:Country a owl:Class ;
-  rdfs:label "Country"@en ;
-  rdfs:comment "A country identified by ISO3 code. Country attributes correspond to c_* variables."@en .
+dgo:Country a owl:Class ;
+    rdfs:label "Country"@en ;
+    rdfs:comment "A country associated with a participant or opponent context."@en .
 
-#################################################################
-# OBJECT PROPERTIES (LINKS BETWEEN ENTITIES)
-#################################################################
+dgo:Role a owl:Class ;
+    rdfs:label "Role"@en ;
+    rdfs:comment "A role occupied by a participant within a decision event."@en .
 
-:inDataset a owl:ObjectProperty ;
-  rdfs:label "in dataset"@en ;
-  rdfs:comment "Links any instance (participant, game, round, decision, etc.) to the dataset it belongs to."@en ;
-  rdfs:domain owl:Thing ;
-  rdfs:range :Dataset .
+dgo:GameType a owl:Class ;
+    rdfs:label "Game Type"@en ;
+    rdfs:comment "A conceptual type of game."@en .
 
-:participatesInGame a owl:ObjectProperty ;
-  rdfs:label "participates in game"@en ;
-  rdfs:comment "Links a participant to a game in which they take part."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range :Game .
+dgo:InteractionType a owl:Class ;
+    rdfs:label "Interaction Type"@en ;
+    rdfs:comment "A conceptual characterization of the interaction, such as competitive, cooperative, or mixed-motive."@en .
 
-:hasRound a owl:ObjectProperty ;
-  rdfs:label "has round"@en ;
-  rdfs:comment "Links a game to one of its rounds."@en ;
-  rdfs:domain :Game ;
-  rdfs:range :Round .
+dgo:GroupRelation a owl:Class ;
+    rdfs:label "Group Relation"@en ;
+    rdfs:comment "A relation between participant and opponent groups, such as ingroup, outgroup, or stranger."@en .
 
-:hasInteraction a owl:ObjectProperty ;
-  rdfs:label "has interaction"@en ;
-  rdfs:comment "Links a round to its interaction context (participant vs opponent context)."@en ;
-  rdfs:domain :Round ;
-  rdfs:range :Interaction .
+dgo:IdentityCategory a owl:Class ;
+    rdfs:label "Identity Category"@en ;
+    rdfs:comment "A categorical representation of a participant's identity-related score."@en .
 
-:hasDecision a owl:ObjectProperty ;
-  rdfs:label "has decision"@en ;
-  rdfs:comment "Links a round to the decision made in that round."@en ;
-  rdfs:domain :Round ;
-  rdfs:range :Decision .
+dgo:GenerosityGps1Category a owl:Class ;
+    rdfs:label "Generosity GPS1 Category"@en ;
+    rdfs:comment "A categorical representation of the participant's first generosity-related score."@en .
 
-:madeByParticipant a owl:ObjectProperty ;
-  rdfs:label "made by participant"@en ;
-  rdfs:comment "Links a decision to the participant who made it."@en ;
-  rdfs:domain :Decision ;
-  rdfs:range :Participant .
+dgo:GenerosityGps2Category a owl:Class ;
+    rdfs:label "Generosity GPS2 Category"@en ;
+    rdfs:comment "A categorical representation of the participant's second generosity-related score."@en .
 
-:hasHomeCountry a owl:ObjectProperty ;
-  rdfs:label "has home country"@en ;
-  rdfs:comment "Links a participant to their home country (ISO3 code in the dataset)."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range :Country .
+dgo:GDPCategory a owl:Class ;
+    rdfs:label "GDP Category"@en ;
+    rdfs:comment "A categorical representation of a country's GDP-related value."@en .
 
-:hasOpponentCountry a owl:ObjectProperty ;
-  rdfs:label "has opponent country"@en ;
-  rdfs:comment "Links an interaction to the opponent's country (ISO3 code in the dataset)."@en ;
-  rdfs:domain :Interaction ;
-  rdfs:range :Country .
+dgo:GINICategory a owl:Class ;
+    rdfs:label "GINI Category"@en ;
+    rdfs:comment "A categorical representation of a country's GINI-related value."@en .
+
+dgo:AgeCategory a owl:Class ;
+    rdfs:label "Age Category"@en ;
+    rdfs:comment "A categorical representation of participant age."@en .
+
+dgo:DecisionCategory a owl:Class ;
+    rdfs:label "Decision Category"@en ;
+    rdfs:comment "A categorical abstraction of a participant's decision outcome."@en .
 
 #################################################################
-# OBJECT PROPERTIES TO SKOS CONCEPTS (CATEGORICAL VARIABLES)
+# CLASS DISJOINTNESS
 #################################################################
 
-:hasGameTypeConcept a owl:ObjectProperty ;
-  rdfs:label "has game type concept"@en ;
-  rdfs:comment "Links a Game instance to a SKOS concept describing the type of game/task used in the dataset (e.g., Attacker–Defender contest)."@en ;
-  rdfs:domain :Game ;
-  rdfs:range skos:Concept .
-
-:hasRoleConcept a owl:ObjectProperty ;
-  rdfs:label "has role concept"@en ;
-  rdfs:comment "Categorical decision role (Attacker or Defender). Dataset variable: d_att_def_within."@en ;
-  rdfs:domain :Decision ;
-  rdfs:range skos:Concept .
-
-:hasGroupRelationConcept a owl:ObjectProperty ;
-  rdfs:label "has group relation concept"@en ;
-  rdfs:comment "Categorical relation between participant and opponent (Ingroup / Outgroup / Stranger). Dataset variable: d_Ingroup_Outgroup_Stranger."@en ;
-  rdfs:domain :Interaction ;
-  rdfs:range skos:Concept .
-
-:hasGenerosityGps1CategoryConcept a owl:ObjectProperty ;
-  rdfs:label "has generosity GPS1 category concept"@en ;
-  rdfs:comment "Categorical version of i_Generosity_gps_1. Dataset variable: i_Generosity_gps_1_cat (Low/Medium/High)."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range skos:Concept .
-
-:hasGenerosityGps2CategoryConcept a owl:ObjectProperty ;
-  rdfs:label "has generosity GPS2 category concept"@en ;
-  rdfs:comment "Categorical version of i_Generosity_gps2. Dataset variable: i_Generosity_gps2_cat (Low/Medium/High)."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range skos:Concept .
-
-:hasIdentityCategoryConcept a owl:ObjectProperty ;
-  rdfs:label "has identity category concept"@en ;
-  rdfs:comment "Categorical version of i_Identity2. Dataset variable: i_Identity_cat (Low/Medium/High)."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range skos:Concept .
-
-#################################################################
-# DATATYPE PROPERTIES (ONE-TO-ONE WITH DATASET VARIABLES)
-#################################################################
-
-############################
-# i_id (Participant identifier)
-############################
-
-:i_id a owl:DatatypeProperty ;
-  rdfs:label "i_id"@en ;
-  rdfs:comment "Subject identifier. Unique per dataset."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range xsd:string .
-
-############################
-# i_* (Individual-level variables)
-############################
-
-:i_age a owl:DatatypeProperty ;
-  rdfs:label "i_age"@en ;
-  rdfs:comment "Age of the participant."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range xsd:integer .
-
-:i_Gender a owl:DatatypeProperty ;
-  rdfs:label "i_Gender"@en ;
-  rdfs:comment "Gender of the participant (as recorded in the dataset)."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range xsd:string .
-
-:i_Generosity_gps_1 a owl:DatatypeProperty ;
-  rdfs:label "i_Generosity_gps_1"@en ;
-  rdfs:comment "Generosity score of the participant (GPS item 1)."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range xsd:decimal .
-
-:i_Generosity_gps2 a owl:DatatypeProperty ;
-  rdfs:label "i_Generosity_gps2"@en ;
-  rdfs:comment "Generosity score of the participant (GPS item 2)."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range xsd:decimal .
-
-:i_Identity2 a owl:DatatypeProperty ;
-  rdfs:label "i_Identity2"@en ;
-  rdfs:comment "National identification score: how much the participant identifies with their own nation."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range xsd:decimal .
-
-############################
-# i_*_z (Standardized individual-level variables)
-############################
-
-:i_age_z a owl:DatatypeProperty ;
-  rdfs:label "i_age_z"@en ;
-  rdfs:comment "Age standardized (z-score)."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range xsd:decimal .
-
-:i_Generosity_gps_1_z a owl:DatatypeProperty ;
-  rdfs:label "i_Generosity_gps_1_z"@en ;
-  rdfs:comment "Generosity GPS item 1 standardized (z-score)."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range xsd:decimal .
-
-:i_Generosity_gps2_z a owl:DatatypeProperty ;
-  rdfs:label "i_Generosity_gps2_z"@en ;
-  rdfs:comment "Generosity GPS item 2 standardized (z-score)."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range xsd:decimal .
-
-:i_Identity2_z a owl:DatatypeProperty ;
-  rdfs:label "i_Identity2_z"@en ;
-  rdfs:comment "National identification standardized (z-score)."@en ;
-  rdfs:domain :Participant ;
-  rdfs:range xsd:decimal .
-
-############################
-# c_* (Country-level variables)
-############################
-
-:c_countryiso3 a owl:DatatypeProperty ;
-  rdfs:label "c_countryiso3"@en ;
-  rdfs:comment "Country ISO3 code of the participant."@en ;
-  rdfs:domain :Country ;
-  rdfs:range xsd:string .
-
-:c_GDP2019 a owl:DatatypeProperty ;
-  rdfs:label "c_GDP2019"@en ;
-  rdfs:comment "Gross domestic product per capita (2019)."@en ;
-  rdfs:domain :Country ;
-  rdfs:range xsd:decimal .
-
-:c_GINI_index_World_Bank_estimate a owl:DatatypeProperty ;
-  rdfs:label "c_GINI_index_World_Bank_estimate"@en ;
-  rdfs:comment "GINI index (World Bank estimate)."@en ;
-  rdfs:domain :Country ;
-  rdfs:range xsd:decimal .
-
-############################
-# c_*_z (Standardized country-level variables)
-############################
-
-:c_GDP2019_z a owl:DatatypeProperty ;
-  rdfs:label "c_GDP2019_z"@en ;
-  rdfs:comment "Gross domestic product per capita (2019) standardized (z-score)."@en ;
-  rdfs:domain :Country ;
-  rdfs:range xsd:decimal .
-
-:c_GINI_index_z a owl:DatatypeProperty ;
-  rdfs:label "c_GINI_index_z"@en ;
-  rdfs:comment "GINI index standardized (z-score)."@en ;
-  rdfs:domain :Country ;
-  rdfs:range xsd:decimal .
-
-############################
-# d_* (Decision/Interaction-level variables)
-############################
-
-:d_countriesT_iso3 a owl:DatatypeProperty ;
-  rdfs:label "d_countriesT_iso3"@en ;
-  rdfs:comment "Country ISO3 code of the opponent."@en ;
-  rdfs:domain :Country ;
-  rdfs:range xsd:string .
-
-:d_investment a owl:DatatypeProperty ;
-  rdfs:label "d_investment"@en ;
-  rdfs:comment "Conflict decision: investment amount (absolute)."@en ;
-  rdfs:domain :Decision ;
-  rdfs:range xsd:decimal .
-
-:d_investment_pct a owl:DatatypeProperty ;
-  rdfs:label "d_investment_pct"@en ;
-  rdfs:comment "Conflict decision: investment expressed in percentage (main outcome variable)."@en ;
-  rdfs:domain :Decision ;
-  rdfs:range xsd:decimal .
-
-#################################################################
-# DATA-ALIGNED MINIMAL CONSTRAINTS
-#################################################################
-
-:Participant rdfs:subClassOf [
-  a owl:Restriction ;
-  owl:onProperty :hasHomeCountry ;
-  owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-  owl:onClass :Country
+[
+    a owl:AllDisjointClasses ;
+    owl:members (
+        dgo:Dataset
+        dgo:Game
+        dgo:Round
+        dgo:Interaction
+        dgo:DecisionEvent
+        dgo:Participant
+        dgo:Country
+        dgo:Role
+        dgo:GameType
+        dgo:InteractionType
+        dgo:GroupRelation
+        dgo:IdentityCategory
+        dgo:GenerosityGps1Category
+        dgo:GenerosityGps2Category
+        dgo:GDPCategory
+        dgo:GINICategory
+        dgo:AgeCategory
+        dgo:DecisionCategory
+    )
 ] .
 
-:Decision rdfs:subClassOf [
-  a owl:Restriction ;
-  owl:onProperty :madeByParticipant ;
-  owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-  owl:onClass :Participant
-] .
+#################################################################
+# OBJECT PROPERTIES
+#################################################################
 
-:Decision rdfs:subClassOf [
-  a owl:Restriction ;
-  owl:onProperty :hasRoleConcept ;
-  owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-  owl:onClass skos:Concept
-] .
+dgo:inDataset a owl:ObjectProperty ;
+    rdfs:label "in dataset"@en ;
+    rdfs:comment "Relates an entity to the dataset it belongs to."@en ;
+    rdfs:range dgo:Dataset .
 
-:Interaction rdfs:subClassOf [
-  a owl:Restriction ;
-  owl:onProperty :hasOpponentCountry ;
-  owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-  owl:onClass :Country
-] .
+dgo:hasRound a owl:ObjectProperty ;
+    rdfs:label "has round"@en ;
+    rdfs:comment "Relates a game to one of its rounds."@en ;
+    rdfs:domain dgo:Game ;
+    rdfs:range dgo:Round .
 
-:Interaction rdfs:subClassOf [
-  a owl:Restriction ;
-  owl:onProperty :hasGroupRelationConcept ;
-  owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-  owl:onClass skos:Concept
-] .
+dgo:hasInteraction a owl:ObjectProperty ;
+    rdfs:label "has interaction"@en ;
+    rdfs:comment "Relates a round to its interaction context."@en ;
+    rdfs:domain dgo:Round ;
+    rdfs:range dgo:Interaction .
+
+dgo:hasDecisionEvent a owl:ObjectProperty ;
+    rdfs:label "has decision event"@en ;
+    rdfs:comment "Relates a round to a decision event occurring within it."@en ;
+    rdfs:domain dgo:Round ;
+    rdfs:range dgo:DecisionEvent .
+
+dgo:hasParticipant a owl:ObjectProperty ;
+    rdfs:label "has participant"@en ;
+    rdfs:comment "Relates a decision event to the participant who made the decision."@en ;
+    rdfs:domain dgo:DecisionEvent ;
+    rdfs:range dgo:Participant .
+
+dgo:inGame a owl:ObjectProperty ;
+    rdfs:label "in game"@en ;
+    rdfs:comment "Relates a decision event to the game in which it occurs."@en ;
+    rdfs:domain dgo:DecisionEvent ;
+    rdfs:range dgo:Game .
+
+dgo:inRound a owl:ObjectProperty ;
+    rdfs:label "in round"@en ;
+    rdfs:comment "Relates a decision event to the round in which it occurs."@en ;
+    rdfs:domain dgo:DecisionEvent ;
+    rdfs:range dgo:Round .
+
+dgo:inInteraction a owl:ObjectProperty ;
+    rdfs:label "in interaction"@en ;
+    rdfs:comment "Relates a decision event to the interaction context in which it occurs."@en ;
+    rdfs:domain dgo:DecisionEvent ;
+    rdfs:range dgo:Interaction .
+
+dgo:hasRole a owl:ObjectProperty ;
+    rdfs:label "has role"@en ;
+    rdfs:comment "Relates a decision event to the role of the participant in that event."@en ;
+    rdfs:domain dgo:DecisionEvent ;
+    rdfs:range dgo:Role .
+
+dgo:hasGameType a owl:ObjectProperty ;
+    rdfs:label "has game type"@en ;
+    rdfs:comment "Relates a game to its conceptual game type."@en ;
+    rdfs:domain dgo:Game ;
+    rdfs:range dgo:GameType .
+
+dgo:hasInteractionType a owl:ObjectProperty ;
+    rdfs:label "has interaction type"@en ;
+    rdfs:comment "Relates an interaction to its interaction type."@en ;
+    rdfs:domain dgo:Interaction ;
+    rdfs:range dgo:InteractionType .
+
+dgo:hasGroupRelation a owl:ObjectProperty ;
+    rdfs:label "has group relation"@en ;
+    rdfs:comment "Relates an interaction to a participant-opponent group relation."@en ;
+    rdfs:domain dgo:Interaction ;
+    rdfs:range dgo:GroupRelation .
+
+dgo:hasOpponentCountry a owl:ObjectProperty ;
+    rdfs:label "has opponent country"@en ;
+    rdfs:comment "Relates an interaction to the opponent country relevant in that context."@en ;
+    rdfs:domain dgo:Interaction ;
+    rdfs:range dgo:Country .
+
+dgo:hasHomeCountry a owl:ObjectProperty ;
+    rdfs:label "has home country"@en ;
+    rdfs:comment "Relates a participant to their home country."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range dgo:Country .
+
+dgo:hasIdentityCategory a owl:ObjectProperty ;
+    rdfs:label "has identity category"@en ;
+    rdfs:comment "Relates a participant to an identity category."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range dgo:IdentityCategory .
+
+dgo:hasGenerosityGps1Category a owl:ObjectProperty ;
+    rdfs:label "has generosity GPS1 category"@en ;
+    rdfs:comment "Relates a participant to a category derived from the first generosity score."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range dgo:GenerosityGps1Category .
+
+dgo:hasGenerosityGps2Category a owl:ObjectProperty ;
+    rdfs:label "has generosity GPS2 category"@en ;
+    rdfs:comment "Relates a participant to a category derived from the second generosity score."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range dgo:GenerosityGps2Category .
+
+dgo:hasGDPCategory a owl:ObjectProperty ;
+    rdfs:label "has GDP category"@en ;
+    rdfs:comment "Relates a country to a GDP category."@en ;
+    rdfs:domain dgo:Country ;
+    rdfs:range dgo:GDPCategory .
+
+dgo:hasGINICategory a owl:ObjectProperty ;
+    rdfs:label "has GINI category"@en ;
+    rdfs:comment "Relates a country to a GINI category."@en ;
+    rdfs:domain dgo:Country ;
+    rdfs:range dgo:GINICategory .
+
+dgo:hasAgeCategory a owl:ObjectProperty ;
+    rdfs:label "has age category"@en ;
+    rdfs:comment "Relates a participant to an age category."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range dgo:AgeCategory .
+
+dgo:hasDecisionCategory a owl:ObjectProperty ;
+    rdfs:label "has decision category"@en ;
+    rdfs:comment "Relates a decision event to a categorical abstraction of its decision value."@en ;
+    rdfs:domain dgo:DecisionEvent ;
+    rdfs:range dgo:DecisionCategory .
+
+#################################################################
+# DATATYPE PROPERTIES
+#################################################################
+
+dgo:datasetIdentifier a owl:DatatypeProperty ;
+    rdfs:label "dataset identifier"@en ;
+    rdfs:comment "The original identifier of the dataset."@en ;
+    rdfs:domain dgo:Dataset ;
+    rdfs:range xsd:string .
+
+dgo:participantId a owl:DatatypeProperty ;
+    rdfs:label "participant ID"@en ;
+    rdfs:comment "The original participant identifier in the source dataset."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range xsd:string .
+
+dgo:countryIso3 a owl:DatatypeProperty ;
+    rdfs:label "country ISO3 code"@en ;
+    rdfs:comment "The ISO3 country code."@en ;
+    rdfs:domain dgo:Country ;
+    rdfs:range xsd:string .
+
+dgo:roundNumber a owl:DatatypeProperty ;
+    rdfs:label "round number"@en ;
+    rdfs:comment "The numeric round index."@en ;
+    rdfs:domain dgo:Round ;
+    rdfs:range xsd:integer .
+
+dgo:genderRaw a owl:DatatypeProperty ;
+    rdfs:label "gender raw"@en ;
+    rdfs:comment "The raw gender label as recorded in the dataset."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range xsd:string .
+
+dgo:ageRaw a owl:DatatypeProperty ;
+    rdfs:label "age raw"@en ;
+    rdfs:comment "The raw participant age."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range xsd:integer .
+
+dgo:ageZScore a owl:DatatypeProperty ;
+    rdfs:label "age z-score"@en ;
+    rdfs:comment "The standardized participant age."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range xsd:decimal .
+
+dgo:identityScoreRaw a owl:DatatypeProperty ;
+    rdfs:label "identity score raw"@en ;
+    rdfs:comment "The raw identity score."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range xsd:decimal .
+
+dgo:identityZScore a owl:DatatypeProperty ;
+    rdfs:label "identity z-score"@en ;
+    rdfs:comment "The standardized identity score."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range xsd:decimal .
+
+dgo:generosityGps1Raw a owl:DatatypeProperty ;
+    rdfs:label "generosity GPS1 raw"@en ;
+    rdfs:comment "The raw value of the first generosity score."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range xsd:decimal .
+
+dgo:generosityGps1ZScore a owl:DatatypeProperty ;
+    rdfs:label "generosity GPS1 z-score"@en ;
+    rdfs:comment "The standardized value of the first generosity score."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range xsd:decimal .
+
+dgo:generosityGps2Raw a owl:DatatypeProperty ;
+    rdfs:label "generosity GPS2 raw"@en ;
+    rdfs:comment "The raw value of the second generosity score."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range xsd:decimal .
+
+dgo:generosityGps2ZScore a owl:DatatypeProperty ;
+    rdfs:label "generosity GPS2 z-score"@en ;
+    rdfs:comment "The standardized value of the second generosity score."@en ;
+    rdfs:domain dgo:Participant ;
+    rdfs:range xsd:decimal .
+
+dgo:gdpRaw a owl:DatatypeProperty ;
+    rdfs:label "GDP raw"@en ;
+    rdfs:comment "The raw GDP-related value recorded for a country."@en ;
+    rdfs:domain dgo:Country ;
+    rdfs:range xsd:decimal .
+
+dgo:gdpZScore a owl:DatatypeProperty ;
+    rdfs:label "GDP z-score"@en ;
+    rdfs:comment "The standardized GDP-related value for a country."@en ;
+    rdfs:domain dgo:Country ;
+    rdfs:range xsd:decimal .
+
+dgo:giniRaw a owl:DatatypeProperty ;
+    rdfs:label "GINI raw"@en ;
+    rdfs:comment "The raw GINI-related value recorded for a country."@en ;
+    rdfs:domain dgo:Country ;
+    rdfs:range xsd:decimal .
+
+dgo:giniZScore a owl:DatatypeProperty ;
+    rdfs:label "GINI z-score"@en ;
+    rdfs:comment "The standardized GINI-related value for a country."@en ;
+    rdfs:domain dgo:Country ;
+    rdfs:range xsd:decimal .
+
+dgo:decisionValueRaw a owl:DatatypeProperty ;
+    rdfs:label "decision value raw"@en ;
+    rdfs:comment "The raw numeric decision value recorded for a decision event."@en ;
+    rdfs:domain dgo:DecisionEvent ;
+    rdfs:range xsd:decimal .
+
+dgo:decisionPercentageRaw a owl:DatatypeProperty ;
+    rdfs:label "decision percentage raw"@en ;
+    rdfs:comment "The raw percentage decision value recorded for a decision event."@en ;
+    rdfs:domain dgo:DecisionEvent ;
+    rdfs:range xsd:decimal .
+
+dgo:rawGroupRelationLabel a owl:DatatypeProperty ;
+    rdfs:label "raw group relation label"@en ;
+    rdfs:comment "The original label for the group relation as recorded in the dataset."@en ;
+    rdfs:domain dgo:Interaction ;
+    rdfs:range xsd:string .
+
+#################################################################
+# CONCEPT INDIVIDUALS
+#################################################################
+
+dgo:Attacker a dgo:Role ;
+    rdfs:label "Attacker"@en .
+
+dgo:Defender a dgo:Role ;
+    rdfs:label "Defender"@en .
+
+dgo:Cooperator a dgo:Role ;
+    rdfs:label "Cooperator"@en .
+
+dgo:Competitor a dgo:Role ;
+    rdfs:label "Competitor"@en .
+
+dgo:AttackerDefenderContest a dgo:GameType ;
+    rdfs:label "Attacker-Defender Contest"@en .
+
+dgo:ContestGame a dgo:GameType ;
+    rdfs:label "Contest Game"@en .
+
+dgo:StepLevelPublicGoodsGame a dgo:GameType ;
+    rdfs:label "Step-Level Public Goods Game"@en .
+
+dgo:Competitive a dgo:InteractionType ;
+    rdfs:label "Competitive"@en .
+
+dgo:Cooperative a dgo:InteractionType ;
+    rdfs:label "Cooperative"@en .
+
+dgo:MixedMotive a dgo:InteractionType ;
+    rdfs:label "Mixed Motive"@en .
+
+dgo:Ingroup a dgo:GroupRelation ;
+    rdfs:label "Ingroup"@en .
+
+dgo:Outgroup a dgo:GroupRelation ;
+    rdfs:label "Outgroup"@en .
+
+dgo:Stranger a dgo:GroupRelation ;
+    rdfs:label "Stranger"@en .
+
+dgo:IdentityLow a dgo:IdentityCategory ;
+    rdfs:label "Identity Low"@en .
+
+dgo:IdentityMedium a dgo:IdentityCategory ;
+    rdfs:label "Identity Medium"@en .
+
+dgo:IdentityHigh a dgo:IdentityCategory ;
+    rdfs:label "Identity High"@en .
+
+dgo:GenerosityGps1Low a dgo:GenerosityGps1Category ;
+    rdfs:label "Generosity GPS1 Low"@en .
+
+dgo:GenerosityGps1Medium a dgo:GenerosityGps1Category ;
+    rdfs:label "Generosity GPS1 Medium"@en .
+
+dgo:GenerosityGps1High a dgo:GenerosityGps1Category ;
+    rdfs:label "Generosity GPS1 High"@en .
+
+dgo:GenerosityGps2Low a dgo:GenerosityGps2Category ;
+    rdfs:label "Generosity GPS2 Low"@en .
+
+dgo:GenerosityGps2Medium a dgo:GenerosityGps2Category ;
+    rdfs:label "Generosity GPS2 Medium"@en .
+
+dgo:GenerosityGps2High a dgo:GenerosityGps2Category ;
+    rdfs:label "Generosity GPS2 High"@en .
+
+dgo:GDPLow a dgo:GDPCategory ;
+    rdfs:label "GDP Low"@en .
+
+dgo:GDPMedium a dgo:GDPCategory ;
+    rdfs:label "GDP Medium"@en .
+
+dgo:GDPHigh a dgo:GDPCategory ;
+    rdfs:label "GDP High"@en .
+
+dgo:GINILow a dgo:GINICategory ;
+    rdfs:label "GINI Low"@en .
+
+dgo:GINIMedium a dgo:GINICategory ;
+    rdfs:label "GINI Medium"@en .
+
+dgo:GINIHigh a dgo:GINICategory ;
+    rdfs:label "GINI High"@en .
+
+dgo:DecisionLow a dgo:DecisionCategory ;
+    rdfs:label "Decision Low"@en .
+
+dgo:DecisionMedium a dgo:DecisionCategory ;
+    rdfs:label "Decision Medium"@en .
+
+dgo:DecisionHigh a dgo:DecisionCategory ;
+    rdfs:label "Decision High"@en .
