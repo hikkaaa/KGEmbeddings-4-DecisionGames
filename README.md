@@ -2,7 +2,7 @@
 
 ## 🧠 Decision Game Ontology (DGO)
 
-<img width="1840" height="1190" alt="image" src="https://github.com/user-attachments/assets/b5260a1f-3e02-4930-b9d0-780ca97bac11" />
+<img width="1831" height="1190" alt="image" src="https://github.com/user-attachments/assets/3f67fa83-edb5-4163-bd30-0f901fac2661" />
 
 
 The **Decision Game Ontology (DGO)** models how individuals make decisions in structured game settings, including competitive, cooperative, and mixed-motive scenarios.
