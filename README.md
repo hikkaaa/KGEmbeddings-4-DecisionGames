@@ -1,156 +1,132 @@
 # KGEmbeddings-4-XS
 
-<img width="1516" height="1074" alt="image" src="https://github.com/user-attachments/assets/5ddab2a8-dfb6-4a7f-b7b4-6d6fa387df9a" />
+## 🧠 Decision Game Ontology (DGO)
+
+<img width="1840" height="1190" alt="image" src="https://github.com/user-attachments/assets/b5260a1f-3e02-4930-b9d0-780ca97bac11" />
 
 
-This repository contains a **semantic representation** of experimental conflict game datasets, including:
+The **Decision Game Ontology (DGO)** models how individuals make decisions in structured game settings, including competitive, cooperative, and mixed-motive scenarios.
 
-- an  **OWL ontology** modeling the structure of the game
-- a **SKOS vocabulary** for categorical variables
-- the **datasets and codebook**
-- will contain what we need to perform kg embeddings (such as, the knowledge graphs)
-
-The goal is to bridge experimental behavioral data and graph-based machine learning.
+Rather than focusing on a specific domain (e.g., conflict), the ontology captures the **general structure of decision-making in games**, making it flexible across different experimental setups.
 
 ---
 
-## 📁 Repository contents
+## 🎯 Core Idea
 
-├── conflict-dataset-ontology.ttl # Core OWL ontology (structure)\
-├── conflict-vocabulary.ttl # SKOS controlled vocabularies\
-├── conflict_dataset_codebook.R # Original dataset codebook\
-├── conflict_dataset_final.rda # Dataset (R format)\
-├── LICENSE # Apache 2.0 license\
-├── README.md # Project documentation
+At the heart of the ontology is the concept of a **Decision Event**.
 
+A `DecisionEvent` represents a **single, situated decision** made by a participant within a specific context. This includes:
 
----
+- who is making the decision  
+- in which game and round it occurs  
+- the interaction context  
+- the role of the participant  
 
-## 🎮 What the ontology models
-
-The ontology mirrors the structure described in the datasets and their codebook.
-
-### Core modeling idea
-
-> A **Participant** takes part in a **Game**.  
-> Each game consists of multiple **Rounds**.  
-> In each round, the participant is involved in an **Interaction** and makes **one Decision**.
-
-The hierarchy **game → rounds → decisions** is central to the model.
+This design allows us to represent decisions not as isolated values, but as **context-dependent events**.
 
 ---
 
-## Main entities
+## 🧩 Main Components
 
-### Participant
-A human subject in the experiment.
+### 👤 Participant
+Represents an individual taking part in the game.
 
-Participants have:
-- demographic attributes (e.g. age, gender)
-- psychological scale attributes (e.g. generosity, national identity)
-- exactly one home country
-
----
-
-### Game
-A conflict game in which participants take part and make decisions across multiple rounds.
+Each participant is described through:
+- identity category  
+- generosity profiles (GPS1 & GPS2)  
+- home country  
 
 ---
 
-### Round
-A single round within a game.
+### 🎮 Game → 🔁 Round → 🤝 Interaction
 
-Each round contains:
-- one interaction
-- one decision by the focal participant
+The environment is structured hierarchically:
 
----
-
-### Interaction
-The interaction context between a focal participant and an opponent within a round.
-
-⚠️ **Important data constraint**  
-The dataset does not include persistent identifiers for opponents.  
-As a result:
-- the opponent is not modeled as a persistent participant
-- only the **opponent’s country** is observable and represented
-
-This constraint is respected throughout the ontology.
+- **Game** → defines the general setup (e.g., game type)  
+- **Round** → captures repeated interactions  
+- **Interaction** → encodes the social context, including:
+  - group relation (ingroup, outgroup, stranger)
+  - opponent country  
+  - interaction type (competitive, cooperative, mixed)
 
 ---
 
-### Decision
-A decision event corresponding to a participant’s investment choice in a round.
+### ⚙️ DecisionEvent (central node)
 
-Each decision:
-- is made by exactly one participant
-- has exactly one role
-- has a numeric investment value (absolute and percentage)
+This is the key modeling choice.
 
----
+A `DecisionEvent` connects all relevant elements:
 
-### Country
-A country associated with participants and opponents, identified by ISO3 codes and described by country-level attributes (e.g. GDP, GINI).
+- `Participant`
+- `Game`
+- `Round`
+- `Interaction`
+- `Role`
 
----
-
-### Dataset
-A dataset release or version, included for provenance and traceability.
+👉 This creates a **rich relational neighborhood**, which is particularly important for knowledge graph embeddings.
 
 ---
 
-## 🏷️ Controlled vocabulary (SKOS)
+### 🌍 Country
 
-Categorical variables in the dataset are represented using **SKOS vocabularies**, defined in `conflict-vocabulary.owl`.
+Countries are linked both to participants (home country) and interactions (opponent country), and are enriched with:
 
-This keeps the ontology clean and avoids hard-coding category values into the structural model.
+- GDP category  
+- GINI category  
 
-### Included vocabularies
-
-#### Decision roles
-Used to annotate decisions:
-- **Attacker** – the participant invests resources to take resources from an opponent
-- **Defender** – the participant invests resources to protect their own resources
-
-#### Group relations
-Used to annotate interactions:
-- **Ingroup** – opponent belongs to the same group as the participant
-- **Outgroup** – opponent belongs to a different group
-- **Stranger** – opponent’s group membership is unknown
-
-Vocabulary concepts are **referenced**, not instantiated as agents or events.
+This allows socio-economic context to influence the decision structure.
 
 ---
 
-## 🔗 How ontology and vocabulary work together
+### 🏷️ Concept Nodes
 
-- The **ontology** defines the structural entities and relations.
-- The **vocabulary** defines standardized labels for categorical values.
-- Decisions and interactions link to SKOS concepts via object properties.
+All important features are modeled as **entities (not literals)**:
 
-This representation aims to improves clarity, reuse, and interoperability.
+- Role  
+- GameType  
+- GroupRelation  
+- IdentityCategory  
+- Generosity categories  
+- GDP / GINI categories  
 
----
+This is intentional:
 
-## 📈 Why this repository exists
-
-This representation makes it possible to:
-
-- populate a knowledge graph directly from row-based experimental data
-- run structured queries over participants, games, rounds, and decisions
-- analyze relational patterns across roles, group relations, and countries
-- apply **knowledge graph embedding techniques** 
+👉 It makes the ontology **embedding-friendly**, since KG embedding models learn from relationships between entities.
 
 ---
 
-## Design principles
+## 🔎 Traceability Layer
 
-- ✔ grounded in datasets, codebook and previous work
-- ✔ no inferred beliefs, strategies, or mental states  
-- ✔ no theoretical constructs added beyond observed variables  
-- ✔ a core game → round → decision structure  
+While the ontology is optimized for relational structure, it also preserves the original data through **data properties**, such as:
 
-The ontology is intentionally **minimal and extensible**.
+- raw scores (identity, generosity, GDP, GINI)  
+- z-scores  
+- participant ID  
+- ISO country codes  
+- raw decision values  
+
+These are included for:
+- reproducibility  
+- auditing  
+- detailed querying  
+
+but are **not the primary signal for embeddings**.
+
+---
+
+## 🤖 Why this design?
+
+The ontology is specifically designed to support:
+
+- knowledge graph embeddings  
+- clustering and similarity analysis  
+- predictive modeling  
+
+The key principle is:
+
+👉 **Structure over raw numbers**
+
+Relational patterns (who, where, in which context) are emphasized over isolated numeric values.
 
 ---
 
