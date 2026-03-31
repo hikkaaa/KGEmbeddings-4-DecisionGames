@@ -132,6 +132,20 @@
         <mxCell id="Mq92KhdnBvey2b39w4UN-36" edge="1" parent="1" source="Mq92KhdnBvey2b39w4UN-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="Mq92KhdnBvey2b39w4UN-34">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="Mq92KhdnBvey2b39w4UN-109" edge="1" parent="1" source="Mq92KhdnBvey2b39w4UN-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" target="Mq92KhdnBvey2b39w4UN-4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="583" y="355" />
+              <mxPoint x="583" y="264" />
+              <mxPoint x="705" y="264" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Mq92KhdnBvey2b39w4UN-110" connectable="0" parent="Mq92KhdnBvey2b39w4UN-109" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="inInteraction" vertex="1">
+          <mxGeometry relative="1" x="0.3462" y="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
         <mxCell id="Mq92KhdnBvey2b39w4UN-5" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=light-dark(#000000, #6d5100);" value="DecisionEvent" vertex="1">
           <mxGeometry height="50" width="100" x="460" y="330" as="geometry" />
         </mxCell>
